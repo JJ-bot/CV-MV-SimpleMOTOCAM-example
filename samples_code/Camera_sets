@@ -1,0 +1,13 @@
+from SimpleCV import *
+
+cam1 = Camera(0, {"width": 1280, "height": 1200})
+cam2 = Camera(1, {"width": 1280, "height": 1200})
+cam3 = Camera(2, {"width": 1280, "height": 1200})
+
+cam1_img = cam1.getImage()
+cam2_img = cam2.getImage()
+
+side = cam1_img.sideBySide(cam2_img)
+side.save("side_test.png")
+
+img = Image("side_test.png")

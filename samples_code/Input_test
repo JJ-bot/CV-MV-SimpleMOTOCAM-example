@@ -1,0 +1,21 @@
+import sys
+from SimpleCV import *
+
+def main(argv):
+    image = Image(argv[0])
+    
+    drinklist = {'p': "pepsi_logo3.png",
+                 'm': "multisola_logo2.png"}
+    
+    drink = Image(drinklist[argv[1]])
+
+    if drink:
+        print "drink"
+    else:
+        print "no drink"
+
+if __name__ == "__main__":
+
+    #main(sys.argv[1:])
+    argv=["piksne.png", "p", "m"]
+    placeInd = main(argv)

@@ -1,0 +1,14 @@
+import sys
+import time
+from SimpleCV import *
+
+drinklist = {'1': "pepsi_logo3.png",
+             '2': "multisola_logo2.png"}
+
+
+
+for drink in drinklist:
+    select = input(drinklist)
+    img = Image(select)
+
+    

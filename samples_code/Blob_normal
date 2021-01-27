@@ -1,0 +1,15 @@
+from SimpleCV import *
+
+cam = Camera(0, {"width":1280,"height":720})
+
+img = cam.getImage().grayscale()
+
+tmp = Image("pepsi_logo3.png").grayscale()
+
+bimg = img.findBlobs()
+
+btmp = tmp.findBlobs()
+
+for ba in bimg:
+    for bb in btmp:
+        print ba.match(bb)

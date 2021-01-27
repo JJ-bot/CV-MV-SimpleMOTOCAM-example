@@ -1,0 +1,22 @@
+from SimpleCV import Camera, Image, Color
+cam = Camera()
+while True:
+    for x in range(0, 10):
+        cam.getImage()
+    img = cam.getImage()
+    dist = img.colorDistance(Color.BLACK).dilate(2)
+    segmented = dist.stretch(200,250)
+    blobs = segmented.findBlobs()
+    img2 = cam.getImage()
+    dist2 = img2.colorDistance(Color.BLACK).dilate(2)
+    segmented2 = dist2.stretch(200,250)
+    blobs2 = segmented2.findBlobs()
+    motion = img2.findMotion(img)
+    motion.draw()
+    img2.show()
+    lasko = Image("lasko.png")
+    distlasko = img.colorDistance(Color.BLACK).dilate(2)
+    seglasko = dist.stretch(200,250)
+    blasko = seglasko.findBlobs()
+
+        

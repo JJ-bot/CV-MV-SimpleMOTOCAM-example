@@ -1,0 +1,16 @@
+iw = 1280
+io = 300
+k = iw /io
+x0 = 0
+Ppixel = iw / k
+positions = {}
+values = []
+for x in range(1,k):
+    positions["pos{0}".format(x)]= (str(positions))
+    for i in range(0,io,io):
+        
+    	values[(100+100).format(i)]= (values)
+    	print values
+for x in range(1,k):
+	n = x * io
+	positions.append(n)

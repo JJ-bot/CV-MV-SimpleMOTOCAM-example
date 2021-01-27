@@ -1,0 +1,24 @@
+#example of color distancing
+
+import SimpleCV
+from SimpleCV import Camera, Image, Color, Display
+from SimpleCV.Tracking import CAMShiftTracker
+cam = Camera()
+disp = Display()
+
+while disp.isNotDone():
+    for x in range(0, 10):
+        cam.getImage()
+    img = cam.getImage()
+    dist = img.colorDistance(SimpleCV.Color.BLACK).dilate(1)
+    segmented = dist.stretch(100,250)
+    blobs = segmented.findBlobs()
+    lasko = Image("lasko.png")
+    distlasko = img.colorDistance(Color.BLACK).dilate(2)
+    seglasko = dist.stretch(100,250)
+    blasko = seglasko.findBlobs()
+    
+
+        
+
+        

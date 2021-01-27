@@ -1,0 +1,44 @@
+from SimpleCV import *
+
+cam = Camera(0, {"width":1280, "height":720})
+original = cam.getImage()
+original.save("original.png")
+tmp = Image("multisola_logo2.png")
+#or_line = original.drawLine((640,0), (640,720), color=(0, 200, 0), thickness=1)
+#or_circle = original.drawCircle((640,360),rad=50,color=(200,0,0),thickness=3)
+
+
+img = Image("original.png")
+or_circle = img.drawCircle((640,360),rad=50,color=(200,0,0),thickness=1)
+img1 = cam.getImage().grayscale()
+img2 = cam.getImage().grayscale()
+diff = img2 -img1
+while True:
+    
+    img = cam.getImage()
+    match = img.findKeypointMatch(tmp, quality=500.0, minDist=0.85, minMatch=0.25)
+    if match:
+        match.draw(color=(129,127,3),width=3,autocolor=False)
+        img.show()
+        m = match.coordinates()
+        m = m.tolist()
+        m = m.pop()
+        x = m.pop(0)
+        y = m.pop(0)
+        x = int(float(x))
+        y = int(float(y))
+    pos1 = range(0,
+    
+"""
+while True:
+    img3 = cam.getImage()
+    dist = img3.colorDistance(color=(0,0,0)).dilate(2)
+    segmented = dist.stretch(100,255)
+    blobs = segmented.findBlobs()
+    if blobs:
+        circles = blobs.filter([b.isCircle(0.2) for b in blobs])
+        if circles:
+            img3.drawCircle((circles[-1].x,circles[-1].y), circles[-1].radius(),color=(129,127,3),thickness=2)
+    img3.show()
+"""
+

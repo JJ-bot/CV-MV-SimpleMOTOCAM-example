@@ -1,0 +1,17 @@
+import sys, time
+
+def main():
+    years = [1,2,4]
+    children = ['Piki','Jakob','Alenka']
+    for c in children:
+        print children.pop(0)," is ", years.pop(0),"years old."
+main()
+
+key = raw_input("Press enter to run program")
+if key:
+    if __name__ == "__main__":
+        print "program running"
+    else:
+        print "program not runing"
+else:
+    print "There is no program running!"

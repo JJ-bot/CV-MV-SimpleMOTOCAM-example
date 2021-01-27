@@ -1,0 +1,19 @@
+import math
+
+x = 300
+y = 200
+centerX = 640
+centerY = 360
+
+
+
+d = 300
+fac = 163096
+r1 = (centerX - x) ** 2
+r2 = (centerY - y) ** 2
+r3 = r1 + r2
+r4 = math.sqrt(r3)
+print r4
+h = (r4 ** 2) + (d ** 2)
+h = math.sqrt(h)
+print h

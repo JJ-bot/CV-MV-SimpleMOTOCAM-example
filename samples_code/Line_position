@@ -1,0 +1,91 @@
+from SimpleCV import *
+
+cam = Camera(0, {"width":1280, "height":720})
+original = cam.getImage()
+original.save("original.png")
+tmp = Image("multisola_logo2.png").grayscale()
+#or_line = original.drawLine((640,0), (640,720), color=(0, 200, 0), thickness=1)
+#or_circle = original.drawCircle((640,360),rad=50,color=(200,0,0),thickness=3)
+
+
+img = Image("original.png")
+or_circle = img.drawCircle((640,360),rad=50,color=(200,0,0),thickness=1)
+img1 = cam.getImage().grayscale()
+img2 = cam.getImage().grayscale()
+diff = img2 -img1
+
+while True:
+    img = cam.getImage().grayscale()
+    match = img.findKeypointMatch(tmp, quality=500.0, minDist=0.85, minMatch=0.25)
+    if match:
+        match.draw(color=(129,127,3),width=3,autocolor=False)
+        img.show()
+        m = match.coordinates()
+        m = m.tolist()
+        m = m.pop()
+        x = m.pop(0)
+        y = m.pop(0)
+        x = int(float(x))
+        y = int(float(y))
+        OW = 66
+        lines_match = img.findLines(threshold=80, minlinelength=66, maxlinegap=0, cannyth1=50, cannyth2=100, useStandard=False, nLines=10, maxpixelgap=1)
+        bl = match.bottomLeftCorners()
+        br = match.bottomRightCorners()
+        tl = match.topLeftCorners()
+        tr = match.topRightCorners()
+
+        bl = bl.tolist().pop()
+        br = br.tolist().pop()
+        tl = tl.tolist().pop()
+        tr = tr.tolist().pop()
+
+        x1 = bl.pop(0)
+        y1 = bl.pop()
+        x2 = br.pop(0)
+        y2 = br.pop()
+        x3 = tl.pop(0)
+        y3 = tl.pop()
+        x4 = tr.pop(0)
+        y4 = tr.pop()
+
+        x1 = int(float(x1))
+        y1 = int(float(y1))
+        x2 = int(float(x2))
+        y2 = int(float(y2))
+        x3 = int(float(x3))
+        y3 = int(float(y3))
+        x4 = int(float(x4))
+        y4 = int(float(y4))
+
+        centerX = 640
+        centerY = 360
+
+        line_left = y1 - y3
+        line_right= y2 - y4
+
+        if line_left < line_right:
+            line = line_right
+        elif line_right < line_left:
+            line = line_left 
+        elif line_right == line_left:
+            line = line_left
+
+        can_line = 115
+        skala = ((can_line * 1.000)/(line * 1.000))
+        print line
+        if can_line == line:
+            distance = 1406
+            fac = 161690
+            print distance, "mm"
+
+        elif can_line < line:
+            fac = 161690
+            distance1 = float(((fac / line) / (1 + skala))
+                      )
+
+            print distance1, "mm"
+        elif can_line > line:
+            fac = 161690
+            distance2 = float(((fac / line) / (1 + skala))
+                      )
+            print distance2, "mm"

@@ -1,0 +1,18 @@
+from SimpleCV import Camera, Image, Display, Color
+cam = Camera()
+disp = Display()
+while disp.isNotDone():
+    img = cam.getImage()
+    imgb1 = img.binarize()
+    stretch1 = imgb1.stretch(100,150)
+    blobs1 = stretch1.findBlobs()
+    lasko = Image("laskoA.png")
+    laskob = lasko.binarize()
+    laskos = laskob.stretch(100,150)
+    laskoblobl = laskos.findBlobs()
+    img2 = cam.getImage()
+    imgb2 = img2.binarize()
+    stretch2 = imgb2.stretch(100,150)
+    blobs2 = stretch2.findBlobs()
+
+    blobs2.show()

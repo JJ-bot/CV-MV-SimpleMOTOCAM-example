@@ -1,0 +1,217 @@
+# -*- coding: cp1250 -*-
+__author__ = "janezj"
+
+"""
+
+Program Simple MOTOCAM
+
+Pozdravljeni!. Program je narejen za zaznavo objektov na sliki.
+Uporablja se SimpleCV platforma. S tem programom zaznamo objekte s pomoèjo
+funkcij, ki jim lahko doloèimo lokacijo oziroma pozicijo na podlagi koordinat.
+Nekateri deli programa so oznaèeni kot komentarji, saj je funkcij veliko,
+vendar nekatere so manj pomembne. Veè funkcij bi pomenilo tudi preveèjo obremenitev
+procesiranja, zato sem se odloèil, da nekaterih funkcij ne uporabljamo.
+Lahko jih uporabite po želji. V skripto lahko vnesemo tudi OpenCV platformo,
+ki pa je že v osnovi SimpleCV-ja. Uporablja se verzija SimpleCV-1.3, OpenCV-2.0.0.
+Program deluje na principu blackboxa.
+
+
+"""
+
+# I. VNESEMO MODULE
+# V skripto dodamo vse tiste module, ki jih bomo potrebovali.
+# Lahko jih dodamo po želji, ker ne omejujejo delovanje programa.
+
+# Vnesemo pygame
+import pygame
+# Vnesemo numpy matematiène funkcije za obdelavo slik.
+import numpy as np
+# Vnesemo sistemske modul
+import sys, glob, time, os
+# Vnesemo SimpleCV modul
+from SimpleCV import * 
+# Vnesemo modul za ethernet povezavo
+import socket
+# Vnesemo modul za funkcijska orodja
+import itertools
+# Vnesemo modul za fast etherent
+import dx_fast_eth_server
+
+"""
+# II. POVEZAVA Z ROBOTOM
+# Ustvarimo povezavo z robotom s pomoèjo socket modula. Upoštevati moramo, da se izklopi požarni zid.
+# Povezava je mogoèa samo znotraj enega strežnika na enem rooterju.
+
+# Napišemo IP od robota pod host. Nastavimo port.
+# Ustvarimo velikost prenosa podatkov (size) in maksimalno število za povezave.
+host = 'robothost'
+port = 5000
+size = 1024
+backlog = 5
+
+# Ustvarimo vrsto protokola povezave in povežemo.
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((host,port))
+"""
+
+# III. INICIALIZACIJA KAMERE
+# Iz SimpleCV modula inicializiramo in nastavimo nastavitve kamere.
+# Nastavimo za najevèjo zmogljivo resolucijo zajemanja slik -> 1280:720
+
+cam = Camera(0, {"width": 1280, "height": 1200})
+
+# Inicializiramo display, vendar nastavimo resolucijo prikaza
+# slike na 0, ker se display avtomatièno prilagajo nastavitvam
+# kamere.
+
+disp = Display(resolution=(0,0))
+
+
+# Za dobro delovanje kamere je priporoèeno, da se ta sprva
+# "ogreje", ker s tem pridobimo boljše rezultate podatkov
+# na sliki. Prvi dve ali tri slike so lahko zmeraj motne.
+
+# Napišemo funkcijo:
+
+frames = 10
+
+for x in range(0,frames):
+    img = cam.getImage()
+    time.sleep(0.1)
+
+
+
+# IV. PROGRAM
+
+"""
+
+Idej za kako napisati program je veè. Spodaj je samo nekaj naštetih.
+Program je lahko napisan z argumetni kot definicja, npr. def main(argv). S to
+funkcijo vstavljamo in klièemo argumente, ki pa potem izpeljejo oeracije.
+Lahko napišemo tudi statièno skripto s pomoèjo matematiènih funkcij in operacij.
+Ta skripta je napisana statièno, kjer si ukazi sledijo po zaporedju. Drugi naèin
+skripte je v drugi datoteki. 
+Naèin zaznave žive slike z while loop.
+
+
+"""
+
+
+# Naložimo template sliko in jo pretvorimo v sivine.
+tmp = 0
+
+drinks = {'1': "pepsi_logo3.png",
+          '2': "lasko.png",
+          '3': "union_logo2.png",
+          '4': "multisola_logo2.png",
+          '5': "cocacola_logo2.png"}
+    
+input = raw_input("""Meni:
+                  \n 1 - Pepsi
+                  \n 2 - Lasko
+                  \n 3 - Union
+                  \n 4 - Multi Sola
+                  \n 5 - Coca Cola
+                  \n
+                  \n Izberite pijaèo:""")
+    
+for key,values in drinks.iteritems():
+    if input in key:
+        tmp = Image(values).grayscale()
+        
+    
+
+m = []
+f = 10
+for f in range(0,f):
+    img = cam.getImage().grayscale()
+    match = img.findKeypointMatch(tmp, quality=500.0, minDist=0.7, minMatch=0.20)
+    if match:
+        match.draw(color = (128,230,89), width=5, autocolor=False)
+        match.show()
+        values = match.coordinates()
+            
+        print "Koordinate piksne: ", values
+        m.append(values)
+        if len(m) == 2:
+            
+            x1 = m.pop(0)
+            x1 = x1.tolist()
+            x1 = x1.pop()
+            x_1 = x1.pop(0)
+            x_1 = int(float(x_1))
+            
+            x2 = m.pop(0)
+            x2 = x2.tolist()
+            x2 = x2.pop()
+            x_2 = x2.pop(0)
+            x_2 = int(float(x_2))
+            
+            diff = x_2 - x_1
+            if diff in range(-35,35,1):
+                    
+                print "Piksna je."
+                m.append(x2)
+                break
+                
+            else:
+                if diff in range(-300,300,1):
+                        print "Piksne ni. Ali se vrnem na zaèetek?"
+                        stri = raw_input()
+                        
+                        print "\n"
+                        if stri == "y":
+                            my_program()
+                        elif stri == "n":
+                            print "Zapiram program."
+                            exit()
+                else:
+                    continue
+        else:
+            continue
+            
+    else:
+        print "Ni piksne."
+
+mw = match.width()
+mw = mw.tolist()
+mw = mw.pop()
+ow = int(mw)
+row = ow * 1.30
+print ow
+iw = 1280
+
+poses = int(iw / ow)
+print "Pozicij je: ", poses
+# Izraèunamo opredeljeno vrednost širine objekta v pixlih
+ow = iw/poses
+# Ustvarimo prazne liste in slovar.
+positions = []
+val1 = []
+val2 = []
+results = {}
+
+val1 = [i*ow for i in range(0,poses)]
+val2 = [i*ow for i in range(1,poses+1)]
+positions = ["pozicija"+str(i) for i in range(1,poses+1)]
+
+for x,y,z in zip(positions,val1,val2):
+    results[x] = range(y,z)
+
+input = x_2
+for key,values in results.iteritems():
+    if input in values:
+        print "Piksna:", key
+    
+print "Ali želite nadaljevati z iskanjem (Y/N)?"
+
+stri = raw_input()
+print "\n"
+if stri == "y":
+    my_program()
+elif stri == "n":
+    print "Adijo."
+    key = raw_input("Pritisni enter za izhod.")
+    exit()
+

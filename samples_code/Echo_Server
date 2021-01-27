@@ -1,0 +1,28 @@
+"""
+A simple echo server
+"""
+
+import socket
+
+host = '192.168.1.71'
+port = 50005
+backlog = 5
+size = 1024
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((host,port))
+list = s.listen(backlog)
+hold = raw_input()
+if hold:
+    print "Sprejemam podatke:"
+    c, a = s.accept()
+    data = c.recv(size)
+    if data:
+        c.send(data)
+        print "Data send back"
+    print data
+    key = raw_input("press enter to exit")
+    if key:
+        s.close()
+        exit()
+
+

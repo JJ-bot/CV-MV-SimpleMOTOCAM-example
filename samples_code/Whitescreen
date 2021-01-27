@@ -1,0 +1,19 @@
+from SimpleCV import *
+
+cam = Camera(0, {"width":1280, "height":720})
+
+background = Image("white_frame.png")
+
+disp = Display(resolution=(0,0))
+
+while True:
+    img = cam.getImage()
+    
+
+
+    dist = img.colorDistance(color=(0,0,0)).dilate(2)
+    segmented = dist.stretch(150,255)
+    blobs = segmented.findBlobs()
+    if blobs:
+        bimg = img.binarize()
+        img.show()

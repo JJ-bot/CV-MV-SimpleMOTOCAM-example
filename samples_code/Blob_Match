@@ -1,0 +1,46 @@
+# -*- coding: cp1250 -*-
+from SimpleCV import *
+
+
+
+
+"""
+img = cam.getImage().grayscale()
+
+tmp = Image("pepsi_logo3.png").grayscale()
+
+bimg = img.findBlobs()
+
+btmp = tmp.findBlobs()
+v = []
+for ba in bimg:
+    for bb in btmp:
+        print ba.match(bb)
+"""
+cam = Camera(0, {"width":1280,"height":720})
+values = []
+def myprogram():
+    
+
+
+    
+    img1 = cam.getImage()
+    img2 = Image("multisola_logo2.png")
+
+    b1 = img1.findBlobs()
+    b2 = img2.findBlobs()
+
+    for ba in b1:
+        for bb in b2:
+            values.append(ba.match(bb))
+    
+    print len(v)
+    no = {"no", "n", "N", "No"}
+    yes = {"yes", "y", "Y", "Yes"}
+    key = raw_input("Ali želite nadaljevati?")
+    
+    if key in no:
+        exit()
+    elif key in yes:
+        myprogram()
+myprogram()
